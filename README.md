@@ -1,7 +1,7 @@
 # Artemisa
 
-Backend de la fase 1 para gestionar tareas con historial de auditoría. Incluye una
-arquitectura por capas, SQLAlchemy 2, MySQL, migraciones Alembic, scripts SQL y pruebas.
+Backend para gestionar tareas con historial de auditoría. Incluye una arquitectura por
+capas, SQLAlchemy 2, MySQL, migraciones Alembic y una API REST con FastAPI.
 
 ## Requisitos
 
@@ -43,12 +43,42 @@ pytest
 
 La suite usa SQLite en memoria para comprobar la lógica sin requerir un servidor MySQL.
 
+## API REST (fase 2)
+
+Inicia el servidor de desarrollo con:
+
+```bash
+uvicorn artemisa.main:app --reload
+```
+
+La API usa el prefijo `/api/v1`. La documentación interactiva está disponible en
+`/docs` y el esquema OpenAPI en `/openapi.json`. Las operaciones que modifican datos
+aceptan el encabezado opcional `X-Actor` para identificar al autor en la auditoría.
+
+```text
+GET    /api/v1/health
+POST   /api/v1/tasks
+GET    /api/v1/tasks
+GET    /api/v1/tasks/{task_id}
+PATCH  /api/v1/tasks/{task_id}
+POST   /api/v1/tasks/{task_id}/complete
+DELETE /api/v1/tasks/{task_id}
+```
+
+El listado admite `status`, `priority`, `scope`, `search`, `offset` y `limit` como
+parámetros de consulta. Por ejemplo:
+
+```bash
+curl 'http://127.0.0.1:8000/api/v1/tasks?status=pending&priority=alta'
+```
+
 ## Estructura
 
 ```text
 src/artemisa/
 ├── config.py              # Configuración desde el entorno
 ├── database.py            # Motor y sesiones SQLAlchemy
+├── api/                   # Rutas, esquemas y dependencias HTTP
 ├── domain/                # Enumeraciones y errores de negocio
 ├── models/                # Entidades persistentes
 ├── repositories/          # Acceso a datos

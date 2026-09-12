@@ -92,7 +92,7 @@ class TaskService:
         task_id: int,
         *,
         title: str | None = None,
-        description: str | None = None,
+        description: str | None | _Unset = UNSET,
         priority: TaskPriority | None = None,
         due_date: datetime | None | _Unset = UNSET,
         scope: TaskScope | None = None,
@@ -107,7 +107,7 @@ class TaskService:
             if clean_title != task.title:
                 changes["title"] = {"old": task.title, "new": clean_title}
                 task.title = clean_title
-        if description is not None:
+        if description is not UNSET:
             clean_description = self._clean_description(description)
             if clean_description != task.description:
                 changes["description"] = {"old": task.description, "new": clean_description}
@@ -179,7 +179,9 @@ class TaskService:
         return task
 
     @staticmethod
-    def _clean_description(description: str | None) -> str | None:
+    def _clean_description(description: str | None | _Unset) -> str | None:
+        if description is UNSET:
+            return None
         if description is None:
             return None
         value = description.strip()

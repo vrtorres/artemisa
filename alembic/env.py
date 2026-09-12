@@ -13,7 +13,6 @@ if config.config_file_name is not None:
 config.set_main_option("sqlalchemy.url", Settings.from_env().database_url)
 target_metadata = Base.metadata
 
-
 def run_migrations_offline() -> None:
     context.configure(
         url=config.get_main_option("sqlalchemy.url"),
